@@ -1,0 +1,68 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://src/UI/debug/Debug_Tools.gd" type="Script" id=1]
+[ext_resource path="res://assets/UI/Fonts/Comforta.ttf" type="DynamicFontData" id=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float blur_amount : hint_range(0, 5);
+
+void fragment() {
+	COLOR = textureLod(SCREEN_TEXTURE, SCREEN_UV, blur_amount);
+	float lum = (COLOR.r+COLOR.g+COLOR.b)/8.0;
+	COLOR.xyz = vec3(lum);
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/blur_amount = 3.5
+
+[sub_resource type="DynamicFont" id=3]
+size = 48
+font_data = ExtResource( 2 )
+
+[node name="Debug_Tools" type="HSplitContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+split_offset = 1600
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Debug_Text" type="Control" parent="."]
+margin_right = 1596.0
+margin_bottom = 1080.0
+
+[node name="Debug_Panel" type="Panel" parent="."]
+material = SubResource( 2 )
+margin_left = 1608.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+
+[node name="Set_All_Button" type="Button" parent="Debug_Panel"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -76.0
+custom_fonts/font = SubResource( 3 )
+text = "SET ALL"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Debug_Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_bottom = -78.0
+scroll_horizontal_enabled = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Debug_Panel/ScrollContainer"]
+alignment = 2
+[connection signal="pressed" from="Debug_Panel/Set_All_Button" to="." method="_on_Set_All_Button_pressed"]
